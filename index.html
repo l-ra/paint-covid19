@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Paint COVID-19</title>
+<style>
+    html {
+        margin:0px;
+    }
+    body {
+        margin:0px;
+        padding:1em;
+    }
+</style>
+<body>
+    <h1>Paint COVID-19</h1>
+    <p>COVID-19 gene sequence consists of 29903 gene "letters" (ATCG). 
+        Here you can assign each letter a color and paint the virus code 
+        as an image. You can even send the virus to a friend of foe.</p>
+    <p>
+
+    </p>
+    <p>
+        A:<input type="color" id='a' value='#00ffff' onchange="paintIt()"> <!--aqua-->
+        T:<input type="color" id='t' value='#008080' onchange="paintIt()"> <!--teal-->
+        C:<input type="color" id='c' value='#DC143C' onchange="paintIt()"> <!--crimson-->
+        G:<input type="color" id='g' value='#00ff00'  onchange="paintIt()"> <!--green-->
+        <!--Pixel size: <input type="number" value="2" id="pixelsize" style="width:3em" onchange="paintIt()">    -->
+    </p>
+    <p>
+        <canvas width=172 height=172></canvas>
+    </p>
+    <p>
+        <small>Sequence source <a href="https://www.ncbi.nlm.nih.gov/nuccore/MN908947">https://www.ncbi.nlm.nih.gov/nuccore/MN908947</a></small>
+    </p>
+    <script src="sequence.js"></script>
+    <script>
+window.addEventListener("load",()=>{
+    paintIt()
+})    
+
+function paintIt(){
+    const canvas = document.querySelector("canvas")
+    const ctx = canvas.getContext('2d')
+    //const pixelSize=document.querySelector("#pixelsize").value || 3 //letter width
+    const pixelSize=2
+    const imgW=Math.floor(Math.sqrt(seq.length))
+    console.log(`imgW: ${imgW}`)
+    canvas.width=imgW*pixelSize
+    canvas.height=imgW*pixelSize
+    var pismena  = {}
+    const scheme = {
+        'a':"aqua",
+        't':"turquoise",
+        'g':'green',
+        'c':'crimson'
+    } 
+    Object.keys(scheme).forEach((code)=>{
+        scheme[code]=document.querySelector(`#${code}`).value
+    })
+    let y=0;
+    let x=0;
+    for (let i=0; i<seq.length; i++){
+        ctx.fillStyle=scheme[seq[i]]
+        ctx.fillRect(x*pixelSize,y*pixelSize,pixelSize,pixelSize)
+        x = (x+1) % imgW
+        y = Math.floor(i / imgW)
+    }   
+    ctx.globalAlpha=0.50
+    ctx.fillStyle="black"
+    ctx.textAlign="right"
+    ctx.font=`bold ${imgW/4}px sans-serif`
+    ctx.fillText("COVID-19",imgW*pixelSize-2*pixelSize,imgW*pixelSize-2*pixelSize, imgW*pixelSize-4)
+
+
+}
+
+    </script>
+</body>
+</html>
