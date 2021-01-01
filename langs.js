@@ -23,9 +23,9 @@ let s = {
     en: `Download & Share`,
     cs: `Stahnout & Sdílet`,
   },
-  lang: {
-    en: `${navigator.language || navigator.userLanguage}`,    
-  }
+//   lang: {
+//     en: `${navigator.language || navigator.userLanguage}`,    
+//   }
 };
 
 function doTranslate(context) {
@@ -38,6 +38,7 @@ function doTranslate(context) {
     } else {
         lang='en'
     }
+    s.lang={en:lang}
     //console.log(`lang: ${lang}`);
     if (context == null) doTranslate(document.querySelector("html"));
     else {
