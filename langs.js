@@ -31,7 +31,13 @@ let s = {
 function doTranslate(context) {
   try {
     //console.log(context);
-    var lang = navigator.language || navigator.userLanguage;
+    let lang = navigator.language || navigator.userLanguage;
+    const langMatch=/([..])(-[..])?/.exec(lang)
+    if (langMatch){
+        lang=langMatch[1]
+    } else {
+        lang='en'
+    }
     //console.log(`lang: ${lang}`);
     if (context == null) doTranslate(document.querySelector("html"));
     else {
