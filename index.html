@@ -51,7 +51,7 @@ window.addEventListener("load",()=>{
 
     const btnRandomize = document.querySelector("#btnRandomize")
     btnRandomize.addEventListener("click",(ev)=>{
-        console.log("randomize")
+        //console.log("randomize")
         document.querySelector("#a").value=randomColor()
         document.querySelector("#t").value=randomColor()
         document.querySelector("#c").value=randomColor()
@@ -60,11 +60,11 @@ window.addEventListener("load",()=>{
     })
 
     if (window.location.hash){
-        console.log("matching hash")
+        //console.log("matching hash")
         const re=/:?(([atcg])([0-9a-f]{6}))/g
         let match=null
         while ( (match=re.exec(window.location.hash)) != null ) {
-            console.log(`match ${re.lastIndex} ${match}`)
+            //console.log(`match ${re.lastIndex} ${match}`)
             document.querySelector(`#${match[2]}`).value=`#${match[3]}`
         }
     }
@@ -75,7 +75,7 @@ window.addEventListener("load",()=>{
 })    
 
 function share(ev) {
-  console.log("sharing")
+  //console.log("sharing")
   var dt = document.querySelector('canvas').toDataURL('image/png');
   /* Change MIME type to trick the browser to downlaod the file instead of displaying it */
   dt = dt.replace(/^data:image\/[^;]*/, 'data:application/octet-stream');
@@ -99,13 +99,13 @@ function randomColor() {
 
 function paintIt(){
     const urlTextSize=10
-    console.log("painting")
+    //console.log("painting")
     const canvas = document.querySelector("canvas")
     const ctx = canvas.getContext('2d')
     //const pixelSize=document.querySelector("#pixelsize").value || 3 //letter width
     const pixelSize=2
     const imgW=Math.floor(Math.sqrt(seq.length))
-    console.log(`imgW: ${imgW}`)
+    //console.log(`imgW: ${imgW}`)
     canvas.width=imgW*pixelSize
     canvas.height=imgW*pixelSize+urlTextSize+4
 
