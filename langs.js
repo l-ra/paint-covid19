@@ -22,6 +22,9 @@ let s = {
   downloadShare:{
     en: `Download & Share`,
     cs: `Stahnout & Sdílet`,
+  },
+  lang: {
+    en: `${navigator.language || navigator.userLanguage}`,    
   }
 };
 
