@@ -32,7 +32,7 @@ function doTranslate(context) {
   try {
     //console.log(context);
     let lang = navigator.language || navigator.userLanguage;
-    const langMatch=/([..])(-[..])?/.exec(lang)
+    const langMatch=/(..)(-..)?/.exec(lang)
     if (langMatch){
         lang=langMatch[1]
     } else {
