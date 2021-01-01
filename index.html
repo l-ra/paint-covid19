@@ -2,7 +2,7 @@
 <html>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Paint COVID-19</title>
+    <title>{{paintCovid19}}</title>
 <style>
     html {
         margin:0px;
@@ -13,10 +13,8 @@
     }
 </style>
 <body>
-    <h1>Paint COVID-19</h1>
-    <p>COVID-19 gene sequence consists of 29903 gene "letters" (ATCG). 
-        Here you can assign each letter a color and paint the virus code 
-        as an image. You can even send the virus to a friend of foe.</p>
+    <h1>{{paintCovid19}}</h1>
+    <p>{{explainSite}}</p>
     <p>
 
     </p>
@@ -26,20 +24,81 @@
         C:<input type="color" id='c' value='#DC143C' onchange="paintIt()"> <!--crimson-->
         G:<input type="color" id='g' value='#00ff00'  onchange="paintIt()"> <!--green-->
         <!--Pixel size: <input type="number" value="2" id="pixelsize" style="width:3em" onchange="paintIt()">    -->
+        <button id="btnRandomize">{{randomColors}}</button>
     </p>
     <p>
         <canvas width=172 height=172></canvas>
     </p>
     <p>
-        <small>Sequence source <a href="https://www.ncbi.nlm.nih.gov/nuccore/MN908947">https://www.ncbi.nlm.nih.gov/nuccore/MN908947</a></small>
+        <a href="" id="btnDnld" download="paint-covid19.club.png">{{downloadShare}}</a>
+    </p>
+    <p>
+        <small>{{sequenceSource}}<a href="https://www.ncbi.nlm.nih.gov/nuccore/MN908947">https://www.ncbi.nlm.nih.gov/nuccore/MN908947</a></small>
     </p>
     <script src="sequence.js"></script>
+    <script src="langs.js"></script>
     <script>
+
+
 window.addEventListener("load",()=>{
+    doTranslate(null);
+    document.querySelector("#a").addEventListener("change",()=>paintIt())
+    document.querySelector("#t").addEventListener("change",()=>paintIt())
+    document.querySelector("#c").addEventListener("change",()=>paintIt())
+    document.querySelector("#g").addEventListener("change",()=>paintIt())
+
+
+    const btnRandomize = document.querySelector("#btnRandomize")
+    btnRandomize.addEventListener("click",(ev)=>{
+        console.log("randomize")
+        document.querySelector("#a").value=randomColor()
+        document.querySelector("#t").value=randomColor()
+        document.querySelector("#c").value=randomColor()
+        document.querySelector("#g").value=randomColor()
+        paintIt()        
+    })
+
+    if (window.location.hash){
+        console.log("matching hash")
+        const re=/:?(([atcg])([0-9a-f]{6}))/g
+        let match=null
+        while ( (match=re.exec(window.location.hash)) != null ) {
+            console.log(`match ${re.lastIndex} ${match}`)
+            document.querySelector(`#${match[2]}`).value=`#${match[3]}`
+        }
+    }
+
+    document.querySelector("#btnDnld").addEventListener("click",(ev)=>{share(ev);}, false)
+
     paintIt()
 })    
 
+function share(ev) {
+  console.log("sharing")
+  var dt = document.querySelector('canvas').toDataURL('image/png');
+  /* Change MIME type to trick the browser to downlaod the file instead of displaying it */
+  dt = dt.replace(/^data:image\/[^;]*/, 'data:application/octet-stream');
+
+  /* In addition to <a>'s "download" attribute, you can define HTTP-style headers */
+  dt = dt.replace(/^data:application\/octet-stream/, 'data:application/octet-stream;headers=Content-Disposition%3A%20attachment%3B%20filename=paint-covid19.club.png');
+ 
+  ev.target.href = dt;
+};
+
+function randomColor() {
+  var letters = '0123456789ABCDEF';
+  var color = '#';
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
+
+
+
 function paintIt(){
+    const urlTextSize=10
+    console.log("painting")
     const canvas = document.querySelector("canvas")
     const ctx = canvas.getContext('2d')
     //const pixelSize=document.querySelector("#pixelsize").value || 3 //letter width
@@ -47,16 +106,23 @@ function paintIt(){
     const imgW=Math.floor(Math.sqrt(seq.length))
     console.log(`imgW: ${imgW}`)
     canvas.width=imgW*pixelSize
-    canvas.height=imgW*pixelSize
+    canvas.height=imgW*pixelSize+urlTextSize+4
+
+    ctx.fillStyle="white"
+    ctx.fillRect(0,0,canvas.width, canvas.height)
+
+
     var pismena  = {}
     const scheme = {
         'a':"aqua",
         't':"turquoise",
         'g':'green',
         'c':'crimson'
-    } 
+    }
+    let hash=[]
     Object.keys(scheme).forEach((code)=>{
         scheme[code]=document.querySelector(`#${code}`).value
+        hash.push(`${code}${scheme[code].substring(1)}`)
     })
     let y=0;
     let x=0;
@@ -66,12 +132,20 @@ function paintIt(){
         x = (x+1) % imgW
         y = Math.floor(i / imgW)
     }   
+
     ctx.globalAlpha=0.50
     ctx.fillStyle="black"
     ctx.textAlign="right"
     ctx.font=`bold ${imgW/4}px sans-serif`
     ctx.fillText("COVID-19",imgW*pixelSize-2*pixelSize,imgW*pixelSize-2*pixelSize, imgW*pixelSize-4)
 
+    ctx.globalAlpha=1
+    ctx.fillStyle="black"
+    ctx.textAlign="right"
+    ctx.font=`bold ${urlTextSize}px sans-serif`
+    ctx.fillText(window.location.href,imgW*pixelSize-2*pixelSize,imgW*pixelSize+urlTextSize+2, imgW*pixelSize-4)
+
+    window.location.hash=hash.join(":")
 
 }
 
